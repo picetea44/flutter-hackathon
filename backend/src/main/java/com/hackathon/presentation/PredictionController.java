@@ -35,12 +35,14 @@ public class PredictionController {
 	}
 
 	@GetMapping("/latest")
-	@Operation(summary = "최신 예측 조회", description = "S&P 500의 가장 최근 예측을 조회합니다")
+	@Operation(summary = "최신 예측 조회", description = "S&P 500의 가장 최근 예측을 조회합니다. 없으면 새로 생성합니다.")
 	public ResponseEntity<ApiResponse<PredictionHistory>> getLatestPrediction() {
 		List<PredictionHistory> predictions = predictionRepository.findByTargetMarketIndexOrderByPredictedAtDesc(
 			MarketIndex.STANDARD_AND_POORS_500
 		);
-		PredictionHistory latest = predictions.stream().findFirst().orElseThrow();
+		PredictionHistory latest = predictions.stream()
+			.findFirst()
+			.orElseGet(() -> oracleService.predictMarketMovement(MarketIndex.STANDARD_AND_POORS_500));
 		return ResponseEntity.ok(ApiResponse.success(latest));
 	}
 

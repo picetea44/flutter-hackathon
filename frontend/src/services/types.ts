@@ -19,6 +19,7 @@ export interface PredictionHistory {
   targetMarketIndex: MarketIndex;
   predictedAt: string;
   createdAt: string;
+  statements?: Statement[];
 }
 
 export interface IndexValue {

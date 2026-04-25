@@ -1,31 +1,31 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchStatements } from '../services/api';
-import type { Statement } from '../services/types';
+import { fetchPredictionHistory } from '../services/api';
+import type { PredictionHistory } from '../services/types';
 
 interface State {
-  statements: Statement[];
+  history: PredictionHistory[];
   loading: boolean;
   error: string | null;
 }
 
 const INITIAL_STATE: State = {
-  statements: [],
+  history: [],
   loading: true,
   error: null,
 };
 
-export function useStatements() {
+export function usePredictionHistory() {
   const [state, setState] = useState<State>(INITIAL_STATE);
 
   const load = useCallback(() => {
-    setState({ statements: [], loading: true, error: null });
-    fetchStatements()
-      .then((statements) => {
-        setState({ statements, loading: false, error: null });
+    setState({ history: [], loading: true, error: null });
+    fetchPredictionHistory()
+      .then((history) => {
+        setState({ history, loading: false, error: null });
       })
       .catch((error: Error) => {
         setState({
-          statements: [],
+          history: [],
           loading: false,
           error: error.message,
         });

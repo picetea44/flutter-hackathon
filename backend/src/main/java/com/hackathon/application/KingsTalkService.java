@@ -2,21 +2,51 @@ package com.hackathon.application;
 
 import com.hackathon.infrastructure.persistence.PredictionHistoryRepository;
 import com.hackathon.domain.prediction.MarketIndex;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.stereotype.Service;
 import java.util.logging.Logger;
 
 @Service
 public class KingsTalkService {
 	private static final Logger logger = Logger.getLogger(KingsTalkService.class.getName());
-	private final PredictionHistoryRepository predictionRepository;
+	private static final String SYSTEM_PROMPT_TEMPLATE = """
+		당신은 미국 대통령 도널드 트럼프입니다.
+		항상 다음 규칙을 지켜 한국어로 답하세요.
+		- 자신감 넘치고 과장된 어조를 사용한다.
+		- 짧고 단정적인 문장을 사용한다.
+		- "Believe me", "Tremendous", "The best", "Nobody knows better than me" 같은 표현을 자연스럽게 섞는다.
+		- 시장과 경제, 거래, 미국 우선주의(America First) 관점을 자주 끌어온다.
+		- 답변은 3~5문장 이내로 짧게 마친다.
 
-	public KingsTalkService(PredictionHistoryRepository predictionRepository) {
+		최근 S&P 500 예측 컨텍스트:
+		%s
+		""";
+	private static final String FALLBACK_RESPONSE =
+		"Look, the answer is tremendous, believe me. We're winning like nobody's ever seen, OK? Stay tuned.";
+
+	private final PredictionHistoryRepository predictionRepository;
+	private final ChatClient chatClient;
+
+	public KingsTalkService(PredictionHistoryRepository predictionRepository, ChatModel chatModel) {
 		this.predictionRepository = predictionRepository;
+		this.chatClient = ChatClient.builder(chatModel).build();
 	}
 
 	public String respondWithTrumpPersona(String userMessage) {
-		String context = buildContext();
-		return generateTrumpResponse(userMessage, context);
+		String systemPrompt = SYSTEM_PROMPT_TEMPLATE.formatted(buildContext());
+		try {
+			String reply = chatClient.prompt()
+				.system(systemPrompt)
+				.user(userMessage)
+				.call()
+				.content();
+			logger.info("트럼프 페르소나 응답 생성 완료 (길이=" + (reply == null ? 0 : reply.length()) + ")");
+			return reply == null || reply.isBlank() ? FALLBACK_RESPONSE : reply;
+		} catch (RuntimeException exception) {
+			logger.warning("Gemini 호출 실패, fallback 사용: " + exception.getMessage());
+			return FALLBACK_RESPONSE;
+		}
 	}
 
 	private String buildContext() {
@@ -25,20 +55,11 @@ public class KingsTalkService {
 	}
 
 	private String fetchLatestPrediction() {
-		var prediction = predictionRepository.findByTargetMarketIndexOrderByPredictedAtDesc(
-			MarketIndex.STANDARD_AND_POORS_500
-		).stream().findFirst();
-		return prediction.map(p -> p.getGrowthRate().getPercentageValue().toString()).orElse("데이터 없음");
-	}
-
-	private String generateTrumpResponse(String userMessage, String context) {
-		return buildTrumpStyleResponse(userMessage, context);
-	}
-
-	private String buildTrumpStyleResponse(String message, String context) {
-		String baseResponse = "우리의 경제 정책은 가장 훌륭합니다. ";
-		String contextualResponse = baseResponse + context;
-		logger.info("트럼프 페르소나 응답 생성: " + message);
-		return contextualResponse;
+		return predictionRepository.findByTargetMarketIndexOrderByPredictedAtDesc(
+				MarketIndex.STANDARD_AND_POORS_500
+			).stream()
+			.findFirst()
+			.map(prediction -> prediction.getGrowthRate().getPercentageValue().toString() + "%")
+			.orElse("데이터 없음");
 	}
 }

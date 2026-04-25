@@ -4,7 +4,12 @@
       "WebSearch",
       "Bash(npm list *)",
       "Bash(npm install *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(mvn spring-boot:run *)",
+      "Bash(bash gradlew *)",
+      "Bash(java *)",
+      "PowerShell(choco install *)"
     ]
   }
 }

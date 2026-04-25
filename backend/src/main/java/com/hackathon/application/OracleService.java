@@ -46,8 +46,14 @@ public class OracleService {
 	}
 
 	private Double calculateStatementImpact(Statement statement) {
-		Double aggression = statement.getAggressionIndex().getValue();
-		Double transactionalism = statement.getTransactionalismIndex().getValue();
+		Double aggression = indexValueOrDefault(statement.getAggressionIndex() == null
+			? null : statement.getAggressionIndex().getValue());
+		Double transactionalism = indexValueOrDefault(statement.getTransactionalismIndex() == null
+			? null : statement.getTransactionalismIndex().getValue());
 		return (aggression * 0.4) + (transactionalism * 0.6);
+	}
+
+	private Double indexValueOrDefault(Double value) {
+		return value == null ? 0.5 : value;
 	}
 }
