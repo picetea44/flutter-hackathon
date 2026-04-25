@@ -43,10 +43,8 @@ public class HarvesterService {
 	@EventListener(ApplicationReadyEvent.class)
 	public void harvestOnStartup() {
 		long existing = statementRepository.count();
-		if (existing >= BOOT_CRAWL_TARGET) {
-			logger.info("부팅 크롤링 스킵: 이미 " + existing + "개 발언 존재");
-			return;
-		}
+		statementRepository.deleteAllInBatch();
+		logger.info("부팅 시 statements 초기화: " + existing + "건 삭제");
 		logger.info("부팅 크롤링 시작 (목표 " + BOOT_CRAWL_TARGET + "건)");
 		harvestNews();
 	}
@@ -83,9 +81,18 @@ public class HarvesterService {
 				keywords,
 				article.getPublishedAt()
 			);
+			analyzeStatement(statement, article.getContent());
 			statementRepository.save(statement);
 		} catch (RuntimeException exception) {
 			logger.warning("기사 저장 실패: " + article.getSourceUrl() + " — " + exception.getMessage());
 		}
+	}
+
+	private void analyzeStatement(Statement statement, String content) {
+		AnalysisResult result = analyzer.analyzeStatement(content);
+		statement.analyzeWith(
+			new AggressionIndex(result.getAggressionScore()),
+			new TransactionalismIndex(result.getTransactionalismScore())
+		);
 	}
 }
