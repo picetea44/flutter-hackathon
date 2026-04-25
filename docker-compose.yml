@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: kings-twit-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: kings_twit_local
+      MYSQL_USER: kings_user
+      MYSQL_PASSWORD: kings_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+volumes:
+  mysql_data:
+    driver: local
