@@ -21,6 +21,9 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useLatestPrediction } from './hooks/useLatestPrediction';
+import { useTrumpChat, type ChatMessage } from './hooks/useTrumpChat';
+import type { PredictionHistory } from './services/types';
 
 // --- Sub-components ---
 
@@ -61,7 +64,28 @@ const MarketTicker = () => (
   </div>
 );
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  prediction: PredictionHistory | null;
+  loading: boolean;
+}
+
+const formatGrowth = (value?: number) => {
+  if (value === undefined || value === null) return '— %';
+  const sign = value >= 0 ? '+' : '';
+  return `${sign}${value.toFixed(2)}%`;
+};
+
+const signalLabel = (value?: number) => {
+  if (value === undefined || value === null) return 'PENDING';
+  if (value > 0.5) return 'BULLISH';
+  if (value < -0.5) return 'BEARISH';
+  return 'NEUTRAL';
+};
+
+const HeroSection = ({ prediction, loading }: HeroSectionProps) => {
+  const growth = prediction?.growthRate.percentageValue;
+  const signal = loading ? 'LOADING' : signalLabel(growth);
+  const impact = loading ? '실시간 분석 중...' : `${formatGrowth(growth)} IMPACT EXPECTED`;
   return (
     <section className="relative pt-32 min-h-screen flex flex-col lg:flex-row px-6 md:px-10 gap-6">
       {/* Left Panel: Visual */}
@@ -86,7 +110,7 @@ const HeroSection = () => {
           className="absolute bottom-10 left-6 md:left-10 w-28 md:w-32 h-28 md:h-32 rounded-full glass-panel border-brand-primary/50 flex flex-col items-center justify-center p-4 backdrop-blur-3xl"
         >
           <span className="text-[10px] font-display font-bold text-brand-primary mb-1 tracking-widest">SIGNAL</span>
-          <span className="text-xl md:text-2xl font-black text-white font-display">BULLISH</span>
+          <span className="text-xl md:text-2xl font-black text-white font-display">{signal}</span>
           <div className="w-full h-1 bg-brand-primary mt-2"></div>
         </motion.div>
         
@@ -109,7 +133,7 @@ const HeroSection = () => {
         <div className="glass-panel p-6 h-64 relative overflow-hidden active-border-glow">
           <div className="flex justify-between items-start mb-4">
             <span className="text-[10px] font-display font-bold text-slate-400 tracking-widest uppercase">VOLATILITY INDEX (T-SIGNAL)</span>
-            <span className="text-xs font-display font-medium text-brand-primary tracking-wider">+24.8% IMPACT EXPECTED</span>
+            <span className="text-xs font-display font-medium text-brand-primary tracking-wider">{impact}</span>
           </div>
           <div className="h-40 flex items-end gap-1.5">
             {[30, 45, 35, 70, 90, 60, 40, 55, 75, 45, 85].map((h, i) => (
@@ -158,25 +182,44 @@ const HeroSection = () => {
   );
 };
 
-const SignalInput = () => (
-  <div className="w-full px-6 md:px-10 mb-20 -mt-8 relative z-30">
-    <div className="glass-panel p-1 rounded-none active-border-glow flex flex-col md:flex-row items-center gap-4">
-      <div className="hidden md:flex pl-6 gap-2">
-        {['관세 영향?', '금리 전망?'].map(q => (
-          <span key={q} className="whitespace-nowrap px-3 py-1 glass-panel text-[10px] text-brand-primary cursor-pointer hover:bg-brand-primary hover:text-black transition-all uppercase font-display font-bold">{q}</span>
-        ))}
+interface SignalInputProps {
+  onSend: (text: string) => void;
+  pending: boolean;
+}
+
+const SignalInput = ({ onSend, pending }: SignalInputProps) => {
+  const [draft, setDraft] = useState('');
+  const submit = () => {
+    onSend(draft);
+    setDraft('');
+  };
+  return (
+    <div className="w-full px-6 md:px-10 mb-20 -mt-8 relative z-30">
+      <div className="glass-panel p-1 rounded-none active-border-glow flex flex-col md:flex-row items-center gap-4">
+        <div className="hidden md:flex pl-6 gap-2">
+          {['관세 영향?', '금리 전망?'].map(q => (
+            <span key={q} onClick={() => setDraft(q)} className="whitespace-nowrap px-3 py-1 glass-panel text-[10px] text-brand-primary cursor-pointer hover:bg-brand-primary hover:text-black transition-all uppercase font-display font-bold">{q}</span>
+          ))}
+        </div>
+        <input
+          type="text"
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={(event) => event.key === 'Enter' && submit()}
+          className="flex-grow bg-transparent border-none focus:ring-0 text-white font-display p-6 w-full placeholder:text-slate-600"
+          placeholder="트럼프에게 물어보세요"
+        />
+        <button
+          onClick={submit}
+          disabled={pending || !draft.trim()}
+          className="w-full md:w-auto bg-brand-primary text-black font-black px-12 py-6 uppercase tracking-widest hover:bg-white transition-all font-display text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {pending ? 'ANALYZING...' : 'SEND SIGNAL'}
+        </button>
       </div>
-      <input 
-        type="text" 
-        className="flex-grow bg-transparent border-none focus:ring-0 text-white font-display p-6 w-full placeholder:text-slate-600"
-        placeholder="트럼프에게 물어보세요"
-      />
-      <button className="w-full md:w-auto bg-brand-primary text-black font-black px-12 py-6 uppercase tracking-widest hover:bg-white transition-all font-display text-sm">
-        SEND SIGNAL
-      </button>
     </div>
-  </div>
-);
+  );
+};
 
 const Features = () => (
   <section className="py-20 px-6 md:px-10 bg-brand-surface-low/30">
@@ -272,7 +315,29 @@ const CommandCenter = () => (
   </section>
 );
 
-const ChatSimulation = () => (
+interface ChatSimulationProps {
+  messages: ChatMessage[];
+  pending: boolean;
+  error: string | null;
+}
+
+const ChatBubble = ({ message }: { message: ChatMessage }) => {
+  const isUser = message.role === 'user';
+  const wrapper = isUser ? 'flex justify-end' : 'flex justify-start';
+  const bubble = isUser
+    ? 'bg-brand-primary/10 p-4 border border-brand-primary/20 max-w-[85%]'
+    : 'glass-panel p-5 border-l-4 border-l-brand-primary max-w-[85%]';
+  const text = isUser ? 'text-sm text-white' : 'text-sm text-slate-300 italic leading-relaxed';
+  return (
+    <div className={wrapper}>
+      <div className={bubble}>
+        <p className={text}>{message.text}</p>
+      </div>
+    </div>
+  );
+};
+
+const ChatSimulation = ({ messages, pending, error }: ChatSimulationProps) => (
   <section className="py-20 px-6 md:px-10 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
     <div className="order-2 md:order-1">
       <span className="text-[10px] font-display font-black text-brand-primary uppercase tracking-[0.3em] block mb-4">CONVERSATIONAL INTELLIGENCE</span>
@@ -296,26 +361,24 @@ const ChatSimulation = () => (
       </div>
       
       <div className="flex-grow p-6 space-y-6 overflow-y-auto font-sans">
-        <div className="flex justify-end">
-          <div className="bg-brand-primary/10 p-4 border border-brand-primary/20 max-w-[85%]">
-            <p className="text-sm text-white">How will the proposed 10% universal tariff affect tech sector margins?</p>
+        {messages.length === 0 && !pending && (
+          <div className="text-slate-500 text-xs font-display uppercase tracking-widest">
+            상단의 SEND SIGNAL로 트럼프에게 첫 질문을 던져보세요.
           </div>
-        </div>
-        
-        <div className="flex justify-start">
-          <div className="glass-panel p-5 border-l-4 border-l-brand-primary max-w-[85%]">
-            <p className="text-sm text-slate-300 italic mb-4 leading-relaxed">
-              "Look, we're going to have the biggest margins anyone has ever seen. The tech companies, they're going to come back home. It's about America first. We're going to tax the outsiders, and the insiders—the ones building here—they're going to thrive. It's going to be beautiful."
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-white/5">
-              <span className="text-[10px] font-display font-bold text-brand-primary tracking-widest uppercase">CONFIDENCE: 94%</span>
-              <span className="text-[10px] font-display font-bold text-brand-secondary tracking-widest uppercase">MARKET IMPACT: VOLATILE</span>
-            </div>
+        )}
+        {messages.map((message, index) => (
+          <ChatBubble key={index} message={message} />
+        ))}
+        {pending && (
+          <div className="flex items-center gap-2 text-slate-500 text-[10px] font-display font-bold uppercase tracking-widest">
+            <span className="animate-pulse">Typing analysis...</span>
           </div>
-        </div>
-        <div className="flex items-center gap-2 text-slate-500 text-[10px] font-display font-bold uppercase tracking-widest">
-          <span className="animate-pulse">Typing analysis...</span>
-        </div>
+        )}
+        {error && (
+          <div className="text-brand-secondary text-xs font-display uppercase tracking-widest">
+            ERROR: {error}
+          </div>
+        )}
       </div>
       
       <div className="p-4 bg-black/40 border-t border-white/10 flex gap-4">
@@ -397,6 +460,8 @@ const Footer = () => (
 
 export default function App() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const {prediction, loading} = useLatestPrediction();
+  const {messages, pending, error, send} = useTrumpChat();
 
   useEffect(() => {
     setIsLoaded(true);
@@ -408,11 +473,11 @@ export default function App() {
     <div className="min-h-screen bg-brand-background selection:bg-brand-primary selection:text-black">
       <Navbar />
       <MarketTicker />
-      
+
       <main>
-        <HeroSection />
-        <SignalInput />
-        
+        <HeroSection prediction={prediction} loading={loading} />
+        <SignalInput onSend={send} pending={pending} />
+
         {/* Ad Space Mid */}
         <section className="px-6 md:px-10 py-10">
           <div className="w-full h-32 border border-dashed border-white/10 flex flex-col items-center justify-center bg-brand-surface group hover:border-brand-primary/50 transition-colors">
@@ -423,7 +488,7 @@ export default function App() {
 
         <Features />
         <CommandCenter />
-        <ChatSimulation />
+        <ChatSimulation messages={messages} pending={pending} error={error} />
         <ProcessSteps />
       </main>
 
