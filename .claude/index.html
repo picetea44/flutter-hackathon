@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>TrumpTalk Intelligence</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#bfc5e4",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-surface": "#e5e2e1",
+                        "on-secondary-fixed-variant": "#930005",
+                        "surface-container-lowest": "#0e0e0e",
+                        "secondary-container": "#c5020b",
+                        "on-tertiary-fixed-variant": "#3f465f",
+                        "on-secondary-container": "#ffd2cc",
+                        "outline": "#849495",
+                        "on-secondary-fixed": "#410001",
+                        "on-primary-fixed": "#002022",
+                        "tertiary-container": "#d2d8f8",
+                        "surface-container-low": "#1c1b1b",
+                        "secondary-fixed": "#ffdad5",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-error-container": "#ffdad6",
+                        "tertiary": "#f6f5ff",
+                        "tertiary-fixed": "#dce1ff",
+                        "error-container": "#93000a",
+                        "surface-bright": "#393939",
+                        "background": "#131313",
+                        "on-error": "#690005",
+                        "inverse-surface": "#e5e2e1",
+                        "on-tertiary-fixed": "#141a32",
+                        "surface-container-highest": "#353534",
+                        "on-tertiary-container": "#575e78",
+                        "primary": "#dbfcff",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-container": "#006970",
+                        "on-secondary": "#690003",
+                        "surface-container-high": "#2a2a2a",
+                        "on-surface-variant": "#b9cacb",
+                        "surface": "#131313",
+                        "primary-fixed": "#7df4ff",
+                        "on-background": "#e5e2e1",
+                        "outline-variant": "#3b494b",
+                        "inverse-primary": "#006970",
+                        "surface-dim": "#131313",
+                        "on-tertiary": "#292f48",
+                        "on-primary": "#00363a",
+                        "surface-variant": "#353534",
+                        "error": "#ffb4ab",
+                        "primary-container": "#00f0ff",
+                        "surface-container": "#201f1f",
+                        "surface-tint": "#00dbe9",
+                        "secondary": "#ffb4aa",
+                        "secondary-fixed-dim": "#ffb4aa"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "24px",
+                        "container-max": "1440px",
+                        "unit": "8px",
+                        "gutter": "24px",
+                        "margin-page": "40px",
+                        "stack-xs": "4px",
+                        "stack-sm": "12px",
+                        "stack-lg": "48px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "h1": ["Space Grotesk"],
+                        "data-mono": ["Space Grotesk"],
+                        "h2": ["Space Grotesk"],
+                        "body-md": ["Inter"],
+                        "h3": ["Space Grotesk"],
+                        "label-caps": ["Space Grotesk"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .inner-glow-top { box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1); }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .active-border-glow { border: 1px solid rgba(0, 240, 255, 0.5); box-shadow: 0 0 12px rgba(0, 240, 255, 0.2); }
+        .ticker-scroll { animation: ticker 40s linear infinite; }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- Top Navigation -->
+<nav class="fixed top-0 w-full border-b border-white/10 bg-black/40 backdrop-blur-md z-50 flex justify-between items-center px-10 py-4 inner-glow-top">
+    <div class="text-2xl font-black tracking-tighter text-cyan-400 drop-shadow-[0_0_8px_rgba(0,240,255,0.5)] font-['Space_Grotesk'] uppercase tracking-wider">TrumpTalk</div>
+    <div class="hidden md:flex gap-8">
+        <a class="text-cyan-400 border-b-2 border-cyan-400 pb-1 font-['Space_Grotesk'] uppercase tracking-wider text-label-caps" href="#">Home</a>
+        <a class="text-slate-400 hover:text-white transition-colors font-['Space_Grotesk'] uppercase tracking-wider text-label-caps" href="#">Predictions</a>
+        <a class="text-slate-400 hover:text-white transition-colors font-['Space_Grotesk'] uppercase tracking-wider text-label-caps" href="#">Market Insights</a>
+        <a class="text-slate-400 hover:text-white transition-colors font-['Space_Grotesk'] uppercase tracking-wider text-label-caps" href="#">AI Chat</a>
+        <a class="text-slate-400 hover:text-white transition-colors font-['Space_Grotesk'] uppercase tracking-wider text-label-caps" href="#">Ads</a>
+    </div>
+    <div class="flex items-center gap-4">
+        <span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-cyan-400 transition-colors">notifications</span>
+        <span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-cyan-400 transition-colors">account_circle</span>
+    </div>
+</nav>
+<!-- Global Ticker -->
+<div class="fixed top-[64px] w-full bg-surface-container-low border-b border-white/5 z-40 h-8 flex items-center overflow-hidden">
+    <div class="ticker-scroll flex whitespace-nowrap gap-12 items-center">
+        <span class="text-[10px] font-['Space_Grotesk'] uppercase tracking-widest text-primary-fixed-dim">DJIA +1.24% • NASDAQ -0.45% • BTC $98,400 • GOLD +0.12% • TARIFF RISK: HIGH • FED WATCH: HAWKISH • </span>
+        <span class="text-[10px] font-['Space_Grotesk'] uppercase tracking-widest text-primary-fixed-dim">DJIA +1.24% • NASDAQ -0.45% • BTC $98,400 • GOLD +0.12% • TARIFF RISK: HIGH • FED WATCH: HAWKISH • </span>
+    </div>
+</div>
+<!-- Hero Section -->
+<main class="relative pt-32 min-h-screen flex flex-col md:flex-row px-10 gap-gutter">
+    <!-- Left Panel: Trump Visual -->
+    <div class="relative w-full md:w-1/2 min-h-[600px] rounded-none overflow-hidden group">
+        <img class="w-full h-full object-cover grayscale brightness-50 contrast-125 group-hover:scale-105 transition-transform duration-1000" data-alt="Cinematic portrait of Donald Trump in a commanding pointing pose, dramatic side lighting, set against a dark abstract financial grid background with glowing blue nodes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU6-kiNfiA7jzKWBmzwESqZwwmZq4djoJh8WUVBh-NlZAe91KssNYEBOqDmXqJb-kGeVd_u04LcmVw0eXAzHiv2Xo8dXnziKJpjuXHYaABaBB6fjrEo8d2g2yTHDO_NRkXOOer7hSPBuo6IAdIWmC_r_j2GCfNsrlmpU5_TLWam9xqZ5RBzfEp1Pnuu76FYX3-HcQO0zOiia1j0IG-Za3e4rFZk3DLoV02PJhM123Kf3lNj8pYaD7C6RqwxzuNzM8DUyt1RJ9hzdM"/>
+        <div class="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+        <!-- Signal Badge -->
+        <div class="absolute bottom-10 left-10 w-32 h-32 rounded-full glass-panel border-cyan-400/50 flex flex-col items-center justify-center p-4 backdrop-blur-3xl animate-pulse">
+            <span class="text-label-caps text-cyan-400 mb-1">SIGNAL</span>
+            <span class="text-h3 font-black text-white">BULLISH</span>
+            <div class="w-full h-1 bg-cyan-400 mt-2"></div>
+        </div>
+        <div class="absolute bottom-10 left-48">
+            <h1 class="font-h1 text-h1 text-white uppercase italic tracking-tighter leading-none mb-2">DECIPHER<br/>THE POWER.</h1>
+            <p class="text-body-lg text-slate-300 max-w-sm">Every word a market mover. Every signal an opportunity. Real-time intelligence from the source.</p>
+        </div>
+    </div>
+    <!-- Right Panel: Insights & Charts -->
+    <div class="w-full md:w-1/2 flex flex-col gap-6">
+        <!-- Market Volatility Graphic -->
+        <div class="glass-panel p-6 h-64 relative overflow-hidden active-border-glow">
+            <div class="flex justify-between items-start mb-4">
+                <span class="text-label-caps text-slate-400">VOLATILITY INDEX (T-SIGNAL)</span>
+                <span class="text-data-mono text-cyan-400">+24.8% IMPACT EXPECTED</span>
+            </div>
+            <div class="h-40 flex items-end gap-1">
+                <!-- Faux Bar Chart -->
+                <div class="w-full h-[30%] bg-slate-800/50"></div>
+                <div class="w-full h-[45%] bg-slate-800/50"></div>
+                <div class="w-full h-[35%] bg-slate-800/50"></div>
+                <div class="w-full h-[70%] bg-cyan-500/20 border-t-2 border-cyan-400"></div>
+                <div class="w-full h-[90%] bg-cyan-500/40 border-t-2 border-cyan-400"></div>
+                <div class="w-full h-[60%] bg-slate-800/50"></div>
+                <div class="w-full h-[40%] bg-slate-800/50"></div>
+            </div>
+            <div class="absolute top-1/2 left-0 w-full border-t border-error/30 border-dashed"></div>
+        </div>
+        <!-- Bento Grid Insights -->
+        <div class="grid grid-cols-2 gap-4">
+            <div class="glass-panel p-5 hover:bg-white/5 transition-all">
+                <span class="material-symbols-outlined text-cyan-400 mb-2">campaign</span>
+                <h3 class="text-label-caps text-slate-400 mb-1">Recent Statement</h3>
+                <p class="text-body-md font-semibold text-white">관세/금리 이슈 분석 완료</p>
+            </div>
+            <div class="glass-panel p-5 hover:bg-white/5 transition-all">
+                <span class="material-symbols-outlined text-cyan-400 mb-2">history_edu</span>
+                <h3 class="text-label-caps text-slate-400 mb-1">Historical Pattern</h3>
+                <p class="text-body-md font-semibold text-white">82% 상관관계 감지</p>
+            </div>
+            <div class="glass-panel p-5 hover:bg-white/5 transition-all">
+                <span class="material-symbols-outlined text-cyan-400 mb-2">auto_awesome</span>
+                <h3 class="text-label-caps text-slate-400 mb-1">Next Keyword Prediction</h3>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="px-2 py-0.5 bg-cyan-900/30 text-cyan-400 text-[10px] border border-cyan-400/30">관세</span>
+                    <span class="px-2 py-0.5 bg-cyan-900/30 text-cyan-400 text-[10px] border border-cyan-400/30">중국</span>
+                    <span class="px-2 py-0.5 bg-cyan-900/30 text-cyan-400 text-[10px] border border-cyan-400/30">에너지</span>
+                </div>
+            </div>
+            <div class="glass-panel p-5 border-error/20 hover:bg-error/5 transition-all">
+                <span class="material-symbols-outlined text-error mb-2">trending_down</span>
+                <h3 class="text-label-caps text-slate-400 mb-1">Volatility Forecast</h3>
+                <p class="text-body-md font-semibold text-error">Sharp Move Imminent</p>
+            </div>
+        </div>
+        <!-- Ad Slot (Upper) -->
+        <div class="w-full bg-surface-container-high h-12 flex items-center justify-center border border-white/5">
+            <span class="text-label-caps text-slate-600">Sponsered: Premium Market Access Terminal • <span class="text-cyan-400">Join Now</span></span>
+        </div>
+    </div>
+</main>
+<!-- Bottom Input Bar (Hero Floating) -->
+<div class="w-full px-10 mb-20 -mt-8 relative z-30">
+    <div class="glass-panel p-1 active-border-glow flex items-center gap-4">
+        <div class="pl-6 flex gap-2">
+            <span class="px-3 py-1 glass-panel text-[10px] text-cyan-400 cursor-pointer hover:bg-cyan-400 hover:text-black transition-all">관세 영향?</span>
+            <span class="px-3 py-1 glass-panel text-[10px] text-cyan-400 cursor-pointer hover:bg-cyan-400 hover:text-black transition-all">금리 전망?</span>
+        </div>
+        <input class="flex-grow bg-transparent border-none focus:ring-0 text-white font-['Space_Grotesk'] py-6" placeholder="트럼프에게 물어보세요" type="text"/>
+        <button class="bg-cyan-400 text-black font-black px-10 py-6 uppercase tracking-widest hover:bg-white transition-all">SEND SIGNAL</button>
+    </div>
+</div>
+<!-- Core Features -->
+<section class="py-20 px-10 bg-surface-container-lowest">
+    <div class="mb-12">
+        <h2 class="font-h2 text-h2 uppercase text-white mb-2">INTELLIGENCE SUITE</h2>
+        <div class="h-1 w-24 bg-cyan-400"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+        <div class="glass-panel p-8 group">
+            <div class="w-12 h-12 bg-cyan-400/10 border border-cyan-400 flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-cyan-400">psychology</span>
+            </div>
+            <h3 class="font-h3 text-h3 text-white mb-4">Move Prediction</h3>
+            <p class="text-slate-400 mb-6">Analyzing rhetorical structures to forecast policy shifts before they hit the wire.</p>
+            <div class="h-px w-full bg-white/10 group-hover:bg-cyan-400 transition-all"></div>
+        </div>
+        <div class="glass-panel p-8 group">
+            <div class="w-12 h-12 bg-cyan-400/10 border border-cyan-400 flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-cyan-400">query_stats</span>
+            </div>
+            <h3 class="font-h3 text-h3 text-white mb-4">Market Impact</h3>
+            <p class="text-slate-400 mb-6">Quantifying the dollar value of every social media interaction and public rally statement.</p>
+            <div class="h-px w-full bg-white/10 group-hover:bg-cyan-400 transition-all"></div>
+        </div>
+        <div class="glass-panel p-8 group">
+            <div class="w-12 h-12 bg-cyan-400/10 border border-cyan-400 flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-cyan-400">forum</span>
+            </div>
+            <h3 class="font-h3 text-h3 text-white mb-4">AI Chat Preview</h3>
+            <p class="text-slate-400 mb-6">Interactive simulation environment for testing market hypotheses via direct conversational AI.</p>
+            <div class="h-px w-full bg-white/10 group-hover:bg-cyan-400 transition-all"></div>
+        </div>
+    </div>
+</section>
+<!-- Dashboard Preview -->
+<section class="py-20 px-10">
+    <div class="glass-panel p-1 rounded-xl overflow-hidden active-border-glow">
+        <div class="bg-black/60 p-8">
+            <div class="flex justify-between items-center mb-10">
+                <div>
+                    <h2 class="font-h2 text-h2 text-white">COMMAND CENTER</h2>
+                    <span class="text-label-caps text-slate-500">REAL-TIME RISK ASSESSMENT</span>
+                </div>
+                <div class="flex gap-4">
+                    <div class="px-6 py-2 border border-white/10 text-label-caps text-white">SECTOR MAP</div>
+                    <div class="px-6 py-2 bg-cyan-400 text-black text-label-caps font-bold">LIVE CHART</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-12 gap-6 h-[500px]">
+                <div class="col-span-8 bg-black/40 rounded border border-white/5 relative overflow-hidden">
+                    <img class="w-full h-full object-cover opacity-60" data-alt="Digital professional stock market candlestick chart with multiple moving average lines in neon blue and red on a dark tech background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu54lZnX-3xH0tx89NgmSETCD-n7mn0BCQyriW7Wy8yt-3RnngqmVV8USHgDkNJOzUf9ywgDKkkyuJEG2OhYWXXpPAV0gYATiYGISSspows4oH7YqTpM0u8rlV5YjyRFpGwZIcC03W_PfV927bJDPKQtoUJhcqsLKnGxWxWkdSZhjeFhTOVB4sw0HKqpgjzTMEqqBLFSir84XoHaJYnxgpI9GZhPSwcWz9rLD7JNyW3YB5Lg_5KEFVtSyHGHSPTqUoDJu6sZuKxrQ"/>
+                    <div class="absolute top-4 right-4 flex flex-col gap-2">
+                        <div class="glass-panel px-4 py-2 text-data-mono text-cyan-400">STRATEGY: ACCUMULATE</div>
+                        <div class="glass-panel px-4 py-2 text-data-mono text-error">RISK: CRITICAL</div>
+                    </div>
+                </div>
+                <div class="col-span-4 flex flex-col gap-6">
+                    <div class="flex-grow glass-panel p-6">
+                        <h4 class="text-label-caps text-slate-400 mb-4">Risk Levels by Sector</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-[10px] mb-1"><span>ENERGY</span><span>92%</span></div>
+                                <div class="h-1 w-full bg-slate-800"><div class="h-full bg-error w-[92%]"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[10px] mb-1"><span>TECH</span><span>45%</span></div>
+                                <div class="h-1 w-full bg-slate-800"><div class="h-full bg-cyan-400 w-[45%]"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[10px] mb-1"><span>FINANCE</span><span>68%</span></div>
+                                <div class="h-1 w-full bg-slate-800"><div class="h-full bg-cyan-400 w-[68%]"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h-32 glass-panel p-6 flex items-center justify-center">
+                        <span class="text-h3 font-black text-cyan-400 tracking-widest uppercase">STABLE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- AI Chat Preview -->
+<section class="py-20 px-10 grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+    <div>
+        <span class="text-label-caps text-cyan-400 font-bold tracking-widest block mb-4">CONVERSATIONAL INTELLIGENCE</span>
+        <h2 class="font-h1 text-h1 text-white uppercase italic leading-tight mb-8">TALK TO THE<br/>MARKET MOVER.</h2>
+        <p class="text-body-lg text-slate-400 mb-8">Our AI is trained on 40 years of transcripts, rallies, and legislative actions. Simulate reactions to potential economic shifts in real-time.</p>
+        <button class="border border-cyan-400 text-cyan-400 px-8 py-4 font-bold uppercase tracking-widest hover:bg-cyan-400/10 transition-all">LAUNCH SIMULATOR</button>
+    </div>
+    <div class="glass-panel rounded-2xl overflow-hidden h-[450px] flex flex-col shadow-2xl">
+        <div class="bg-white/5 p-4 border-b border-white/10 flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-cyan-400"></div>
+            <span class="text-label-caps text-white">TRUMPTALK AI SESSION v4.0</span>
+        </div>
+        <div class="flex-grow p-6 space-y-6 overflow-y-auto">
+            <div class="flex justify-end">
+                <div class="bg-cyan-900/40 p-4 rounded-xl rounded-tr-none max-w-[80%] border border-cyan-400/30">
+                    <p class="text-body-md text-white">How will the proposed 10% universal tariff affect tech sector margins?</p>
+                </div>
+            </div>
+            <div class="flex justify-start">
+                <div class="glass-panel p-4 rounded-xl rounded-tl-none max-w-[80%] border-white/20">
+                    <p class="text-body-md text-slate-300">"Look, we're going to have the biggest margins anyone has ever seen. The tech companies, they're going to come back home. It's about America first. We're going to tax the outsiders, and the insiders—the ones building here—they're going to thrive. It's going to be beautiful."</p>
+                    <div class="mt-4 flex gap-4 text-[10px] text-cyan-400 font-bold">
+                        <span>CONFIDENCE: 94%</span>
+                        <span>MARKET IMPACT: VOLATILE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-4 bg-black/40 border-t border-white/10">
+            <div class="flex gap-2 text-slate-500 text-sm">
+                <span>Typing analysis...</span>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Ad Banner Spaces (Mid) -->
+<section class="px-10 py-10">
+    <div class="w-full h-32 border border-dashed border-white/10 flex flex-col items-center justify-center bg-surface-container-low group hover:border-cyan-400/50 transition-colors">
+        <span class="text-label-caps text-slate-700 group-hover:text-cyan-400">ADVERTISEMENT SPACE</span>
+        <p class="text-[10px] text-slate-800 uppercase tracking-widest mt-2">Premium Partner Integrations Only</p>
+    </div>
+</section>
+<!-- How It Works -->
+<section class="py-20 px-10">
+    <h2 class="font-h2 text-h2 text-white text-center mb-16 uppercase tracking-widest">THE PROCESS</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="text-center">
+            <div class="text-h1 font-black text-white/5 mb-[-2rem] select-none">01</div>
+            <div class="relative z-10 glass-panel p-8 pt-12">
+                <h4 class="font-h3 text-white mb-2">Ingestion</h4>
+                <p class="text-slate-400 text-sm">Real-time monitoring of all public and private channel signals.</p>
+            </div>
+        </div>
+        <div class="text-center">
+            <div class="text-h1 font-black text-white/5 mb-[-2rem] select-none">02</div>
+            <div class="relative z-10 glass-panel p-8 pt-12">
+                <h4 class="font-h3 text-white mb-2">Contextualize</h4>
+                <p class="text-slate-400 text-sm">Comparing current rhetoric against 40 years of historical patterns.</p>
+            </div>
+        </div>
+        <div class="text-center">
+            <div class="text-h1 font-black text-white/5 mb-[-2rem] select-none">03</div>
+            <div class="relative z-10 glass-panel p-8 pt-12">
+                <h4 class="font-h3 text-white mb-2">Simulation</h4>
+                <p class="text-slate-400 text-sm">AI-driven market stress-testing based on the identified signal.</p>
+            </div>
+        </div>
+        <div class="text-center">
+            <div class="text-h1 font-black text-white/5 mb-[-2rem] select-none">04</div>
+            <div class="relative z-10 glass-panel p-8 pt-12">
+                <h4 class="font-h3 text-white mb-2">Execution</h4>
+                <p class="text-slate-400 text-sm">Actionable trade signals and risk mitigation protocols delivered.</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Final CTA -->
+<section class="py-32 px-10 bg-gradient-to-b from-transparent to-cyan-900/10">
+    <div class="max-w-4xl mx-auto text-center">
+        <h2 class="font-h1 text-[64px] leading-tight text-white uppercase italic tracking-tighter mb-8">FRONT-RUN THE<br/>MOMENTUM.</h2>
+        <div class="flex flex-col md:flex-row gap-6 justify-center">
+            <button class="bg-cyan-400 text-black font-black px-12 py-6 uppercase tracking-widest text-lg hover:bg-white transition-all">트럼프톡 시작하기</button>
+            <button class="border-2 border-white text-white font-black px-12 py-6 uppercase tracking-widest text-lg hover:bg-white hover:text-black transition-all">예측 보기</button>
+        </div>
+        <p class="mt-12 text-slate-500 font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.2em] max-w-2xl mx-auto leading-relaxed">
+            © 2024 TRUMPTALK INTELLIGENCE. ALL RIGHTS RESERVED. REGULATORY DISCLOSURE: MARKET DATA IS PROVIDED FOR INFORMATIONAL PURPOSES ONLY. TRADING INVOLVES SIGNIFICANT RISK.
+        </p>
+    </div>
+</section>
+<!-- Footer -->
+<footer class="w-full border-t border-white/5 bg-slate-950 flex flex-col md:flex-row justify-between items-center px-10 py-8 gap-4 mt-auto">
+    <div class="text-sm font-bold text-slate-300 font-['Space_Grotesk'] uppercase tracking-widest">TrumpTalk</div>
+    <div class="flex gap-8">
+        <a class="text-slate-600 hover:text-cyan-300 transition-all font-['Space_Grotesk'] text-[10px] uppercase tracking-widest" href="#">Privacy Policy</a>
+        <a class="text-slate-600 hover:text-cyan-300 transition-all font-['Space_Grotesk'] text-[10px] uppercase tracking-widest" href="#">Terms of Service</a>
+        <a class="text-slate-600 hover:text-cyan-300 transition-all font-['Space_Grotesk'] text-[10px] uppercase tracking-widest" href="#">Risk Disclosure</a>
+        <a class="text-slate-600 hover:text-cyan-300 transition-all font-['Space_Grotesk'] text-[10px] uppercase tracking-widest" href="#">SEC Filings</a>
+    </div>
+    <div class="text-slate-500 font-['Space_Grotesk'] text-[10px] uppercase tracking-widest text-center md:text-right">
+        © 2024 TrumpTalk Intelligence. All rights reserved.
+    </div>
+</footer>
+</body></html>
