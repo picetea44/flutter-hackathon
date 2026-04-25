@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "Space Grotesk", ui-monospace, SFMono-Regular, monospace;
+
+  /* Brand Colors from Design System */
+  --color-brand-primary: #00f0ff;
+  --color-brand-primary-dim: #00dbe9;
+  --color-brand-secondary: #ff3b30;
+  --color-brand-background: #131313;
+  --color-brand-surface: #201f1f;
+  --color-brand-surface-low: #1c1b1b;
+  --color-brand-surface-high: #2a2a2a;
+  --color-brand-outline: #3b494b;
+
+  --animate-ticker: ticker 40s linear infinite;
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-brand-background text-zinc-100 font-sans antialiased;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/[0.03] backdrop-blur-xl border border-white/10;
+  }
+  .active-border-glow {
+    @apply border border-brand-primary/50 shadow-[0_0_12px_rgba(0,240,255,0.2)];
+  }
+  .inner-glow-top {
+    @apply shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)];
+  }
+}
