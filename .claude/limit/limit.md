@@ -11,7 +11,7 @@
 
 ## Java/Spring 상세
 
-1. Indent Depth는 1까지만 허용한다.
+1. Indent Depth는 3까지만 허용한다.
 2. `else`, `switch/case` 사용을 금지한다. (Early Return 권장)
 3. 3항 연산자를 사용하지 않는다.
 4. 배열 대신 컬렉션을 사용하며, 모든 컬렉션은 일급 컬렉션으로 구현한다.
